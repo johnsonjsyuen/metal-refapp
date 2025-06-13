@@ -21,42 +21,39 @@ fn handle_client(mut stream: TcpStream, ok_text: &str) {
     let request = String::from_utf8_lossy(&buffer[..]);
     let request_line = request.lines().next().unwrap_or("");
 
-    let response = if request_line.starts_with("GET /healthcheck")
-        || request_line.starts_with("GET /ok")
-        || request_line.starts_with("GET /heartbeat")
-    {
-        println!(
-            "Health check request processed from {}: {}",
-            peer_addr_str, request_line
-        );
-        ok_response
-    } else if request_line.starts_with("GET /failing-deepcheck") {
-        println!(
-            "Failing deepcheck request processed from {}: {}",
-            peer_addr_str, request_line
-        );
-        INTERNAL_SERVER_ERROR_RESPONSE
-    } else if request_line.starts_with("GET /flakey-deepcheck") {
-        let now_millis = SystemTime::now()
-            .duration_since(UNIX_EPOCH)
-            .unwrap_or_default()
-            .as_millis();
-        if now_millis % 100 < 20 {
-            // Roughly 20% chance
-            println!(
-                "Flakey deepcheck (FAILING) request processed from {}: {}",
-                peer_addr_str, request_line
-            );
-            INTERNAL_SERVER_ERROR_RESPONSE
-        } else {
-            println!(
-                "Flakey deepcheck (OK) request processed from {}: {}",
-                peer_addr_str, request_line
-            );
+    let response = match request_line {
+        line if line.starts_with("GET /healthcheck")
+            || line.starts_with("GET /ok")
+            || line.starts_with("GET /heartbeat") =>
+        {
+            println!("Health check request processed from {}: {}", peer_addr_str, request_line);
             ok_response
         }
-    } else {
-        NOT_FOUND_RESPONSE
+        line if line.starts_with("GET /failing-deepcheck") => {
+            println!("Failing deepcheck request processed from {}: {}", peer_addr_str, request_line);
+            INTERNAL_SERVER_ERROR_RESPONSE
+        }
+        line if line.starts_with("GET /flakey-deepcheck") => {
+            let now_millis = SystemTime::now()
+                .duration_since(UNIX_EPOCH)
+                .unwrap_or_default()
+                .as_millis();
+            if now_millis % 100 < 20 {
+                // Roughly 20% chance
+                println!(
+                    "Flakey deepcheck (FAILING) request processed from {}: {}",
+                    peer_addr_str, request_line
+                );
+                INTERNAL_SERVER_ERROR_RESPONSE
+            } else {
+                println!(
+                    "Flakey deepcheck (OK) request processed from {}: {}",
+                    peer_addr_str, request_line
+                );
+                ok_response
+            }
+        }
+        _ => NOT_FOUND_RESPONSE,
     };
 
     stream.write(response.as_bytes()).unwrap();
