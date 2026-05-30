@@ -1,4 +1,5 @@
 # Claude Model Overview: Haiku 4.5, Sonnet 4.6, Opus 4.8
+## + Competitive Comparison: DeepSeek V4 Pro & Kimi K2.6
 
 **Research date: May 30, 2026**
 
@@ -274,3 +275,95 @@ Note: Speed figures from comparison articles, not official Anthropic specificati
 | LLM-stats Haiku 4.5 | https://llm-stats.com/models/claude-haiku-4-5-20251001 | Oct 2025 |
 | NextBigFuture: Parameter count analysis | https://www.nextbigfuture.com/2026/04/anthropic-and-xai-model-parameter-counts.html | Apr 2026 |
 | Claude Wikipedia | https://en.wikipedia.org/wiki/Claude_(language_model) | Ongoing |
+
+---
+
+## Competitive Comparison: DeepSeek V4 Pro & Kimi K2.6
+
+### Model Specifications
+
+| Spec | Haiku 4.5 | Sonnet 4.6 | Opus 4.8 | DeepSeek V4 Pro | Kimi K2.6 |
+|---|---|---|---|---|---|
+| Developer | Anthropic | Anthropic | Anthropic | DeepSeek AI | Moonshot AI |
+| Released | Oct 15, 2025 | Feb 17, 2026 | May 28, 2026 | Apr 24, 2026 | Apr 20, 2026 |
+| Parameters (total) | Undisclosed | Undisclosed | Undisclosed | 1.6T (vendor) | ~1T (vendor) |
+| Parameters (active/token) | Undisclosed | Undisclosed | Undisclosed | 49B (vendor) | 32B (vendor) |
+| Architecture | Transformer | Transformer | Transformer | Sparse MoE + Hybrid Attn | Sparse MoE + MLA |
+| Context window | 200K | 200K (1M beta) | 1M | 1M | 256K |
+| Max output tokens | 64K | 64K | 128K | ~384K+ (flexible) | 256K |
+| Modality | Text + Image | Text + Image | Text + Image | Text | Text + Image + Video |
+| License | Proprietary | Proprietary | Proprietary | MIT (open weights) | Modified MIT (open weights) |
+
+### Performance Benchmarks
+
+| Benchmark | Haiku 4.5 | Sonnet 4.6 | Opus 4.8 | DeepSeek V4 Pro | Kimi K2.6 |
+|---|---|---|---|---|---|
+| **SWE-bench Verified** | 73.3% | 79.6% | **88.6%** | 80.6%† | 80.2%† |
+| **SWE-bench Pro** | — | ~60%+ | 69.2% | 55.4% | **58.6%** |
+| **ARC-AGI-2** | — | 58.3% | — | 46%‡ (NIST) | Not published |
+| **GPQA Diamond** | — | — | 93.6% | 90.1% | **90.5%** |
+| **HumanEval** | ~87% | ~97.6% | — | ~96.4%† | ~92% |
+| **MMLU / MMLU-Pro** | MMLU-Pro 76.8% | — | — | MMLU-Pro 87.5%† | MMLU 86.4% |
+| **MATH / AIME** | 81.3% | — | USAMO 96.7% | AIME ~97%† | AIME 96.4% |
+| **LiveCodeBench** | — | — | — | 93.5%† | — |
+| **Terminal-Bench** | — | 59.1% (v2.0) | 74.6% (v2.1) | 67.9% (v2.0) | 66.7% (v2.0) |
+| **OSWorld** | 50.7% | 72.5% | — | Not published | Not published |
+| **Chatbot Arena ELO** | — | 1,450 | 1,890 | ~1,463 (unconfirmed) | Not published |
+| **Artificial Analysis Index** | — | — | — | 52 | **54** |
+
+† = Vendor-reported, not independently verified as of May 30, 2026
+‡ = NIST CAISI independent evaluation (May 3, 2026); vendor circulated ~77.1% which appears misattributed
+
+### Pricing (API, per million tokens)
+
+| Model | Input | Cached Input | Output | Notes |
+|---|---|---|---|---|
+| **Haiku 4.5** | $1.00 | Up to 90% off | $5.00 | Batch: 50% off |
+| **Sonnet 4.6** | $3.00 | Up to 90% off | $15.00 | Batch: 50% off |
+| **Opus 4.8** | $5.00 | Up to 90% off | $25.00 | Fast mode: $10/$50 (2.5× speed) |
+| **DeepSeek V4 Pro** | **$0.435** | $0.0036 | **$0.87** | 75% discount made permanent May 23, 2026 |
+| **Kimi K2.6** | $0.95 | $0.16 | $4.00 | OpenRouter: $0.684 in / $3.42 out |
+
+### Training Techniques Summary
+
+| Technique | Haiku 4.5 | Sonnet 4.6 | Opus 4.8 | DeepSeek V4 Pro | Kimi K2.6 |
+|---|---|---|---|---|---|
+| SFT | Yes | Yes | Yes | Yes | Yes |
+| RLHF | Yes | Yes | Yes | Not disclosed | Not disclosed |
+| Constitutional AI / RLAIF | Yes | Yes | Yes | No | No |
+| Adaptive/Extended Thinking | On/off | 4-level adaptive | 4-level adaptive | "Think Max" mode | Not disclosed |
+| Agentic fine-tuning | Computer use | Computer use + agent RL | Computer use + Dynamic Workflows | Long-context agent | 300-agent swarm scaling |
+| Optimizer | Undisclosed | Undisclosed | Undisclosed | Muon | MuonClip |
+| Quantization | Undisclosed | Undisclosed | Undisclosed | FP4+FP8 mixed | INT4 (QAT) |
+| Open weights | No | No | No | Yes | Yes |
+
+### Key Observations
+
+1. **Coding/Agentic tasks**: Opus 4.8 leads overall (88.6% SWE-bench Verified). DeepSeek V4 Pro and Kimi K2.6 are competitive with Sonnet 4.6 (~80%) but trail Opus 4.8 by ~8–9 points on verified benchmarks.
+
+2. **Reasoning/Math**: Opus 4.8 leads on USAMO 2026 (96.7%). Both open-weight challengers are competitive on AIME (~97% DeepSeek, 96.4% Kimi).
+
+3. **Computer use / GUI**: Only Claude models publish OSWorld scores. Sonnet 4.6 (72.5%) significantly outperforms Haiku 4.5 (50.7%). DeepSeek and Kimi have not published results on this benchmark.
+
+4. **ARC-AGI-2**: Sonnet 4.6's 58.3% is the only independently verified frontier-class result. DeepSeek V4 Pro's NIST-measured 46% is substantially below vendor claims. Kimi K2.6 has not published a score.
+
+5. **Price**: DeepSeek V4 Pro is dramatically cheaper — ~7× less than Haiku 4.5 on input, ~6× less on output. Kimi K2.6 is cheaper than all Claude tiers. Both are open-weight, enabling self-hosting.
+
+6. **Context**: Opus 4.8 (1M) and DeepSeek V4 Pro (1M) match on context length. Kimi K2.6 (256K) is more limited. Haiku 4.5 and Sonnet 4.6 standard are both 200K.
+
+### Competitive Sources
+
+| Source | URL | Date |
+|---|---|---|
+| DeepSeek V4 API Docs | https://api-docs.deepseek.com/news/news260424 | Apr 24, 2026 |
+| DeepSeek V4 — DataCamp | https://www.datacamp.com/blog/deepseek-v4 | 2026 |
+| NIST CAISI: DeepSeek V4 Pro | https://www.nist.gov/news-events/news/2026/05/caisi-evaluation-deepseek-v4-pro | May 3, 2026 |
+| DeepSeek 75% discount permanent — Engadget | https://www.engadget.com/2180062/deepseek-permanently-reduces-the-price-of-its-flagship-v4-model-by-75-percent/ | May 23, 2026 |
+| DeepSeek V4 Pro — Artificial Analysis | https://artificialanalysis.ai/models/deepseek-v4-pro | Current |
+| Kimi K2.6 Tech Blog — Moonshot AI | https://www.kimi.com/blog/kimi-k2-6 | Apr 20, 2026 |
+| Kimi K2.6 — Hugging Face | https://huggingface.co/moonshotai/Kimi-K2.6 | Apr 2026 |
+| Kimi K2.6 — LLM Stats | https://llm-stats.com/models/kimi-k2.6 | Current |
+| Kimi K2.6 pricing — Moonshot | https://www.kimi.com/resources/kimi-k2-6-pricing | Current |
+| Kimi K2.6 — Artificial Analysis | https://artificialanalysis.ai/models/kimi-k2-6 | Current |
+| Kimi K2.6 vs DeepSeek V4 — Codersera | https://codersera.com/blog/kimi-k2-6-vs-deepseek-v4/ | May 2026 |
+| Moonshot Kimi K2.6 — MarkTechPost | https://www.marktechpost.com/2026/04/20/moonshot-ai-releases-kimi-k2-6 | Apr 20, 2026 |
